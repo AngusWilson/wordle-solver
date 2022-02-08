@@ -78,23 +78,15 @@ optimiseWord:{[wordList]
                 candidateWords:wordList where 3= count each distinct each wordList;
                 ];
 
-        / get best pop rank
-        popRanks:sum each key[letterDist] ?/: candidateWords;
+        / get best pop rank for remaining slots
+        trimWords:candidateWords @\: where not .wordle.dict`correct;
+        remainingDist:desc count each group raze trimWords;
+
+        popRanks:sum each key[remainingDist] ?/: trimWords;
         candidateWords where popRanks=min popRanks
 
-        /return best word
         }
 
-
-wordleFunc:{[guessWord;solword]
-        correct:guessWord='solword;
-
-        outword:guessWord where not guessWord in\: solword;
-
-        inword:(guessWord where guessWord in\: solword)!where guessWord in\: solword;
-
-        :`correct`outword`inword!(correct;outword;inword)
-        }
 
 
 play:{[word;result]
